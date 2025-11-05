@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Invoice Generator for Educators & Course Creators | Easy, Fast & Professional Billing</title>
+    <!-- SEO Meta Description -->
+    <meta name="description" content="Generate professional, clean invoices tailored for teachers, students, and course creators. Our simple online tool is SEO-optimized, free, and designed for the e-learning ecosystem. Supports over 50 global currencies, including USD, EUR, PKR, and INR.">
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Configure custom font and base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            color: theme('colors.text-base');
+            scroll-behavior: smooth;
+        }
+        /* Style the CTA button for a premium look */
+        .cta-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px -3px rgba(74, 222, 128, 0.5); /* Smooth shadow from accent color */
+        }
+        .cta-button:hover {
+            box-shadow: 0 8px 25px -3px rgba(74, 222, 128, 0.7);
+            transform: translateY(-2px);
+        }
+        /* Ensure the invoice template background is white for image/PDF generation */
+        .invoice-template {
+            background-color: white;
+            padding: 1rem; /* Needed for html2pdf/html2canvas to correctly capture content */
+        }
+        /* Styling for print/image downloads */
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .invoice-page {
+                width: 100%;
+                margin: 0;
+                box-shadow: none;
+                border: none;
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // E-Learning/Professional Palette
+                        'brand-primary': '#1e3a8a', // Deep Indigo (Trust/Knowledge)
+                        'brand-accent': '#4ade80', // Emerald Green (Growth/Success)
+                        'brand-light': '#f0f9ff', // Pale Blue (Clean Background)
+                        'text-base': '#1f2937',   // Dark Gray Text
+                        'card-bg': '#ffffff',     // White Cards
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 30px rgba(30, 58, 138, 0.1)', /* Soft shadow from primary color */
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-light">
+
+    <!-- Header & Navigation -->
+    <header class="bg-card-bg shadow-soft sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- Logo/Brand -->
+            <a href="#" class="flex items-center space-x-2 text-xl font-extrabold text-brand-primary">
+                <svg class="w-8 h-8 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.409 9.333 5 8 5a2.458 2.458 0 00-1.258.334M12 6.253c1.168.344 2.667.833 4 1.768V19m-4-13c-1.168.344-2.667.833-4 1.768m12-3.729c1.168.344 2.667.833 4 1.768M8 5c-1.168.344-2.667.833-4 1.768m1-2.022V19"></path></svg>
+                <span>EduBill</span>
+            </a>
+            <!-- Navigation Links (for desktop) -->
+            <nav class="hidden md:flex space-x-8 font-medium">
+                <a href="#generator" class="text-text-base hover:text-brand-accent transition">Generator</a>
+                <a href="#features" class="text-text-base hover:text-brand-accent transition">Features</a>
+                <a href="#seo-content" class="text-text-base hover:text-brand-accent transition">For Educators</a>
+            </nav>
+            <!-- CTA Button -->
+            <a href="#generator" class="cta-button hidden md:block px-5 py-2 bg-brand-accent text-brand-primary font-semibold rounded-lg hover:bg-green-300">
+                Start Billing Now
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="py-16 sm:py-24 text-center bg-brand-primary text-white">
+            <div class="max-w-4xl mx-auto px-4">
+                <!-- SEO Optimized H1 -->
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight">
+                    <span class="text-brand-accent">Professional Invoicing</span> for <span class="text-brand-accent">Educators</span> & Course Creators
+                </h1>
+                <p class="text-lg sm:text-xl font-light mb-8 max-w-2xl mx-auto opacity-90">
+                    Simplify your private tutoring, online course sales, and consultation billing with our clean, free, and responsive invoice generator. **Now supporting 50+ global currencies, including PKR!**
+                </p>
+                <a href="#generator" class="cta-button inline-block px-10 py-4 bg-brand-accent text-brand-primary text-lg font-bold rounded-xl shadow-xl hover:bg-green-300 transform transition duration-300">
+                    Get Started Instantly (It's Free!)
+                </a>
+            </div>
+        </section>
+
+        <!-- Core App / Generator Section -->
+        <section id="generator" class="py-16 sm:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center text-brand-primary mb-12">Your Simple Online Invoice Tool</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                    
+                    <!-- Left Column: Input Form (No-Print Area) -->
+                    <div class="no-print">
+                        <div class="bg-card-bg p-6 sm:p-8 rounded-2xl shadow-soft border border-gray-200">
+                            
+                            <!-- Company & Client Info -->
+                            <div class="mb-6 space-y-3">
+                                <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="businessNameInput" value="EduPro Learning" placeholder="Your Business Name">
+                                <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="businessDetailsInput" rows="2" placeholder="Your Address / Contact Info">123 E-Learning Street, Digital City | billing@edupro.com</textarea>
+                                <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="clientDetailsInput" rows="2" placeholder="Billed To: Client Name / Course Name">Student Name: Alex Johnson | Course: Advanced Calculus</textarea>
+                            </div>
+
+                            <!-- Invoice Details -->
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-text-base mb-1">Invoice ID</label>
+                                    <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="invoiceNumberInput" value="EDU-2025-042">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-text-base mb-1">Date</label>
+                                    <input type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="invoiceDateInput">
+                                </div>
+                            </div>
+                            
+                            <!-- Line Items Section -->
+                            <h3 class="text-xl font-semibold text-brand-primary mt-6 mb-3 border-b border-gray-200 pb-2">Billing Items</h3>
+                            <div id="lineItemsContainer" class="space-y-3">
+                                <!-- Items will be added here -->
+                            </div>
+                            <button class="w-full mt-4 py-2 text-sm font-medium text-brand-primary border border-brand-primary rounded-lg hover:bg-brand-primary hover:text-white transition" id="addItemBtn">
+                                + Add Item (e.g., Tutoring Hours, Course License)
+                            </button>
+
+                            <!-- Calculations & Notes -->
+                            <div class="grid grid-cols-2 gap-4 mt-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-text-base mb-1">Tax Rate (%)</label>
+                                    <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="taxRateInput" value="0" min="0" step="0.5">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-text-base mb-1">Currency</label>
+                                    <!-- Currency options are now dynamically populated in JS -->
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="currencySelect">
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Discount Inputs - NEW SECTION -->
+                            <div class="grid grid-cols-3 gap-4 mt-4">
+                                <div class="col-span-1">
+                                    <label class="block text-sm font-medium text-text-base mb-1">Discount Value</label>
+                                    <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="discountValueInput" value="0" min="0" step="1">
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="block text-sm font-medium text-text-base mb-1">Discount Type</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base" id="discountTypeSelect">
+                                        <option value="percent">Percentage (%)</option>
+                                        <option value="fixed">Fixed Amount</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- END Discount Inputs -->
+
+                            <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-brand-accent focus:border-brand-accent text-text-base mt-4" id="notesInput" rows="2" placeholder="Payment Terms & Notes">Payment due upon receipt. Thank you for investing in education!</textarea>
+
+                            <!-- Download Buttons -->
+                            <div class="grid grid-cols-3 gap-2 mt-8">
+                                <button class="py-3 cta-button bg-brand-primary text-white font-bold rounded-xl shadow-xl hover:bg-indigo-900 transition text-sm" id="downloadPdfBtn">
+                                    PDF Download
+                                </button>
+                                <button class="py-3 cta-button bg-brand-accent text-brand-primary font-bold rounded-xl shadow-xl hover:bg-green-300 transition text-sm" id="downloadPngBtn">
+                                    PNG Image
+                                </button>
+                                <button class="py-3 cta-button bg-brand-accent text-brand-primary font-bold rounded-xl shadow-xl hover:bg-green-300 transition text-sm" id="downloadJpgBtn">
+                                    JPG Image
+                                </button>
+                            </div>
+                            
+                            <button class="w-full mt-4 py-2 text-sm text-brand-primary font-semibold rounded-xl hover:bg-gray-100 transition" id="printBtn">
+                                Print Invoice (Basic Printer Access)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Invoice Preview -->
+                    <div class="h-full">
+                        <div class="invoice-page bg-card-bg p-6 sm:p-10 rounded-2xl shadow-soft border border-gray-200 lg:sticky lg:top-24">
+                            <div class="invoice-template" id="invoiceTemplate">
+                                
+                                <!-- Header & Branding -->
+                                <div class="flex justify-between items-start border-b-4 border-brand-primary pb-4 mb-6">
+                                    <div class="text-brand-primary">
+                                        <h2 class="text-4xl font-extrabold mb-1">INVOICE</h2>
+                                        <p class="text-sm font-semibold">ID: <span id="previewInvoiceNumber" class="font-normal text-text-base">EDU-2025-042</span></p>
+                                        <p class="text-sm font-semibold">Date: <span id="previewInvoiceDate" class="font-normal text-text-base">2025-11-04</span></p>
+                                    </div>
+                                    <div class="text-right">
+                                        <h3 class="text-xl font-bold text-brand-primary mb-1" id="previewBusinessName">EduPro Learning</h3>
+                                        <address class="text-sm text-text-base not-italic leading-relaxed" id="previewBusinessDetails">123 E-Learning Street, Digital City | billing@edupro.com</address>
+                                    </div>
+                                </div>
+                                
+                                <!-- Client Info -->
+                                <div class="mb-6 p-3 bg-brand-light rounded-lg border border-gray-200">
+                                    <p class="font-bold text-xs text-brand-primary uppercase mb-1">Billed To:</p>
+                                    <address class="text-sm text-text-base not-italic" id="previewClientDetails">Student Name: Alex Johnson | Course: Advanced Calculus</address>
+                                </div>
+
+                                <!-- Item Table -->
+                                <div class="overflow-x-auto rounded-xl shadow-sm mb-8">
+                                    <table class="min-w-full divide-y divide-gray-200 invoice-table text-left">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-tl-xl bg-brand-accent text-text-base w-1/2">Description</th>
+                                                <th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-right bg-brand-accent text-text-base w-1/6">Qty</th>
+                                                <th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-right bg-brand-accent text-text-base w-1/6">Unit Price</th>
+                                                <th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-right rounded-tr-xl bg-brand-accent text-text-base w-1/6">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="previewLineItems" class="bg-white divide-y divide-gray-100 text-text-base">
+                                            <!-- Items will be generated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Totals Section -->
+                                <div class="flex justify-end">
+                                    <div class="w-full sm:w-72 space-y-2 text-sm">
+                                        
+                                        <div class="flex justify-between items-center text-text-base font-medium">
+                                            <span>Subtotal:</span>
+                                            <span class="font-semibold"><span class="currency-prefix">$</span><span id="totalSubtotal">0.00</span></span>
+                                        </div>
+
+                                        <!-- NEW DISCOUNT ROW -->
+                                        <div class="flex justify-between items-center text-red-600 font-medium border-t border-gray-200 pt-2">
+                                            <span>Discount (<span id="previewDiscountLabel">0%</span>):</span>
+                                            <span class="font-bold"><span class="currency-prefix">$</span><span id="totalDiscount">-0.00</span></span>
+                                        </div>
+                                        <!-- END NEW DISCOUNT ROW -->
+
+                                        <!-- ADJUSTED SUBTOTAL ROW -->
+                                        <div class="flex justify-between items-center text-text-base font-medium border-t border-gray-200 pt-2">
+                                            <span>Subtotal (After Discount):</span>
+                                            <span class="font-semibold"><span class="currency-prefix">$</span><span id="totalAdjustedSubtotal">0.00</span></span>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center text-text-base font-medium">
+                                            <span>Tax (<span id="previewTaxRate">0</span>%):</span>
+                                            <span class="font-semibold"><span class="currency-prefix">$</span><span id="totalTax">0.00</span></span>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center pt-3 border-t-2 border-brand-accent text-xl font-extrabold text-brand-primary">
+                                            <span>TOTAL DUE:</span>
+                                            <span><span class="currency-prefix">$</span><span id="totalGrandTotal">0.00</span></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Footer Notes -->
+                                <div class="mt-8 pt-4 border-t border-gray-200">
+                                    <p class="font-bold text-xs text-brand-primary mb-1 uppercase">Notes & Terms:</p>
+                                    <p class="text-sm text-text-base" id="previewNotes">Payment due upon receipt. Thank you for investing in education!</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature & SEO Content Section -->
+        <section id="features" class="py-16 bg-card-bg border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center text-brand-primary mb-12">Designed for the Modern Educator</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Feature 1 -->
+                    <div class="p-6 rounded-xl shadow-soft border border-gray-100 text-center">
+                        <svg class="w-10 h-10 text-brand-accent mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <h3 class="text-xl font-semibold text-brand-primary mb-2">Lightning Fast Billing</h3>
+                        <p class="text-sm text-text-base">Generate a clean PDF invoice in under 60 seconds. Spend less time on administration and more time teaching.</p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="p-6 rounded-xl shadow-soft border border-gray-100 text-center">
+                        <svg class="w-10 h-10 text-brand-accent mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a12.016 12.016 0 017.398 2.372 12.002 12.002 0 012.373 7.398h-.001"></path></svg>
+                        <h3 class="text-xl font-semibold text-brand-primary mb-2">Professional & Trustworthy</h3>
+                        <p class="text-sm text-text-base">Our minimal design uses premium typography and structure to reflect the professionalism of your educational service.</p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="p-6 rounded-xl shadow-soft border border-gray-100 text-center">
+                        <svg class="w-10 h-10 text-brand-accent mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                        <h3 class="text-xl font-semibold text-brand-primary mb-2">Global Currency Support</h3>
+                        <p class="text-sm text-text-base">Easily bill international students in their local currency, supporting over 50 options from USD to **PKR**.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SEO Text Content Section -->
+        <section id="seo-content" class="py-16">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-brand-primary mb-6">Why Educators Need a Simple, Specialized Invoice Generator</h2>
+                <p class="mb-4 text-text-base leading-relaxed">
+                    In the fast-paced world of **online education**, time is your most valuable asset. Teachers, private tutors, and course creators often juggle lesson planning, student support, and content creation. The last thing you need is complex accounting software for simple student billing. Our free online invoice generator cuts out the clutter, offering a single, clean interface designed specifically for transactions common in e-learning, such as **hourly tutoring, course subscription fees, and digital product sales**.
+                </p>
+
+                <h3 class="text-2xl font-semibold text-brand-primary mt-8 mb-4">International Billing Made Easy (PKR Support Included)</h3>
+                <p class="mb-4 text-text-base leading-relaxed">
+                    By providing a mobile-friendly, responsive tool that supports a wide range of global currencies, including the **Pakistani Rupee (PKR)**, we ensure you can serve students anywhere in the world. This level of simplicity helps students and parents receive clear, easy-to-read invoices, building **trust and transparency** in your educational services. Start using the best free invoicing solution tailored for the education sector today and reclaim your time for what you do best: inspiring knowledge.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-primary text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8 text-sm mb-4">
+                <a href="#generator" class="hover:text-brand-accent transition">Generator</a>
+                <a href="#features" class="hover:text-brand-accent transition">Features</a>
+                <a href="#seo-content" classA="hover:text-brand-accent transition">About Us</a>
+            </div>
+            <p class="text-sm text-gray-300">&copy; 2025 EduBill - Specialized Billing for Education.</p>
+        </div>
+    </footer>
+
+    <!-- Load html2canvas (dependency for html2pdf.js, but we'll use it directly for images too) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Load html2pdf.js for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+    <script>
+        // Set the initial date to today
+        document.getElementById('invoiceDateInput').valueAsDate = new Date();
+
+        // --- 50+ Global Currency Data (PKR included) ---
+        const currencyData = [
+            // North America
+            { code: 'USD', symbol: '$', name: 'US Dollar', default: true },
+            { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+            { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
+            // Europe
+            { code: 'EUR', symbol: '€', name: 'Euro' },
+            { code: 'GBP', symbol: '£', name: 'British Pound' },
+            { code: 'CHF', symbol: 'Fr.', name: 'Swiss Franc' },
+            { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' },
+            { code: 'NOK', symbol: 'kr', name: 'Norwegian Krone' },
+            { code: 'PLN', symbol: 'zł', name: 'Polish Złoty' },
+            { code: 'CZK', symbol: 'Kč', name: 'Czech Koruna' },
+            { code: 'HUF', symbol: 'Ft', name: 'Hungarian Forint' },
+            { code: 'TRY', symbol: '₺', name: 'Turkish Lira' },
+            { code: 'RUB', symbol: '₽', name: 'Russian Ruble' },
+            // Asia/Middle East (Including PKR and INR)
+            { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+            { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
+            { code: 'KRW', symbol: '₩', name: 'South Korean Won' },
+            { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
+            { code: 'PKR', symbol: 'Rs', name: 'Pakistani Rupee' }, 
+            { code: 'SAR', symbol: '﷼', name: 'Saudi Riyal' },
+            { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham' },
+            { code: 'HKD', symbol: 'HK$', name: 'Hong Kong Dollar' },
+            { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar' },
+            { code: 'THB', symbol: '฿', name: 'Thai Baht' },
+            { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah' },
+            { code: 'MYR', symbol: 'RM', name: 'Malaysian Ringgit' },
+            { code: 'PHP', symbol: '₱', name: 'Philippine Peso' },
+            { code: 'VND', symbol: '₫', name: 'Vietnamese Đồng' },
+            { code: 'BDT', symbol: '৳', name: 'Bangladeshi Taka' },
+            { code: 'ILS', symbol: '₪', name: 'Israeli New Shekel' },
+            // Oceania
+            { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+            { code: 'NZD', symbol: 'NZ$', name: 'New Zealand Dollar' },
+            // South America
+            { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' },
+            { code: 'ARS', symbol: '$', name: 'Argentine Peso' },
+            { code: 'CLP', symbol: '$', name: 'Chilean Peso' },
+            { code: 'COP', symbol: '$', name: 'Colombian Peso' },
+            { code: 'PEN', symbol: 'S/', name: 'Peruvian Sol' },
+            { code: 'UYU', symbol: '$U', name: 'Uruguayan Peso' },
+            // Africa
+            { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
+            { code: 'EGP', symbol: 'E£', name: 'Egyptian Pound' }, // <-- FIX: Added missing quote before EGP
+            { code: 'DZD', symbol: 'د.ج', name: 'Algerian Dinar' },
+            { code: 'GHS', symbol: 'GH₵', name: 'Ghanaian Cedi' },
+            { code: 'KES', symbol: 'KSh', name: 'Kenyan Shilling' },
+            { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' },
+            // Other
+            { code: 'UAH', symbol: '₴', name: 'Ukrainian Hryvnia' },
+            { code: 'KZT', symbol: '₸', name: 'Kazakhstani Tenge' },
+            { code: 'QAR', symbol: '﷼', name: 'Qatari Riyal' },
+            { code: 'TWD', symbol: 'NT$', name: 'New Taiwan Dollar' },
+            { code: 'DOP', symbol: 'RD$', name: 'Dominican Peso' },
+            { code: 'PAB', symbol: 'B/.', name: 'Panamanian Balboa' },
+            { code: 'GTQ', symbol: 'Q', name: 'Guatemalan Quetzal' }
+        ];
+
+        // --- DOM Elements ---
+        const lineItemsContainer = document.getElementById('lineItemsContainer');
+        const addItemBtn = document.getElementById('addItemBtn');
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+        const downloadPngBtn = document.getElementById('downloadPngBtn');
+        const downloadJpgBtn = document.getElementById('downloadJpgBtn');
+        const printBtn = document.getElementById('printBtn');
+        const currencySelect = document.getElementById('currencySelect');
+        const invoiceTemplate = document.getElementById('invoiceTemplate');
+        const invoiceNumberInput = document.getElementById('invoiceNumberInput');
+        const invoiceDateInput = document.getElementById('invoiceDateInput');
+        
+        // NEW DISCOUNT ELEMENTS
+        const discountValueInput = document.getElementById('discountValueInput');
+        const discountTypeSelect = document.getElementById('discountTypeSelect');
+
+
+        // Select all relevant input elements for listening
+        const inputElements = document.querySelectorAll('.bg-card-bg input, .bg-card-bg textarea, #currencySelect, #discountValueInput, #discountTypeSelect');
+
+        // --- Data Model for Line Items ---
+        let lineItems = [];
+        let itemIdCounter = 0; // Unique ID for managing line items
+
+        /**
+         * Finds the currently selected currency object.
+         * @returns {object} The currency object (code, symbol, name).
+         */
+        const getCurrentCurrency = () => {
+            const selectedCode = currencySelect.value;
+            // Find the currency object, default to USD if not found
+            return currencyData.find(c => c.code === selectedCode) || currencyData.find(c => c.code === 'USD'); 
+        };
+
+        /**
+         * Helper function to format an amount with the current currency symbol.
+         * @param {number} amount - The numeric amount.
+         * @returns {string} Formatted string (e.g., '$1,200.00').
+         */
+        const formatAmount = (amount) => {
+            const { symbol } = getCurrentCurrency();
+            // Use toLocaleString for better number formatting (e.g., thousands separator)
+            const formattedNumber = (parseFloat(amount) || 0).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            return `${symbol}${formattedNumber}`;
+        };
+
+        /**
+         * Populates the currency selector dropdown from the currencyData array.
+         */
+        const populateCurrencySelector = () => {
+            currencySelect.innerHTML = ''; // Clear existing options
+            currencyData.forEach(currency => {
+                const option = document.createElement('option');
+                option.value = currency.code;
+                option.textContent = `${currency.code} (${currency.symbol}) - ${currency.name}`;
+                if (currency.default) {
+                    option.selected = true; // Set default selection to USD
+                }
+                currencySelect.appendChild(option);
+            });
+        };
+
+
+        /**
+         * Generates the HTML for a single line item input group.
+         */
+        const createLineItemHTML = (id, itemData = { description: '', qty: 1, price: 100 }) => {
+            const symbol = getCurrentCurrency().symbol;
+            return `
+                <div class="grid grid-cols-12 gap-2 p-3 bg-brand-light rounded-lg border border-gray-200 line-item" data-item-id="${id}">
+                    <div class="col-span-12 sm:col-span-5">
+                        <input type="text" class="w-full text-sm p-1 border-b border-gray-300 focus:border-brand-accent focus:outline-none item-description bg-transparent text-text-base placeholder-gray-500" placeholder="Description (e.g., 5-Hour Tutoring Pack)" value="${itemData.description}">
+                    </div>
+                    <div class="col-span-4 sm:col-span-2">
+                        <input type="number" class="w-full text-sm p-1 border-b border-gray-300 focus:border-brand-accent focus:outline-none item-qty bg-transparent text-text-base text-center" placeholder="Qty" value="${itemData.qty}" min="1">
+                    </div>
+                    <div class="col-span-4 sm:col-span-3">
+                        <div class="flex items-center text-sm border-b border-gray-300 focus-within:border-brand-accent">
+                            <span class="px-1 text-gray-500 currency-symbol-input">${symbol}</span>
+                            <input type="number" class="w-full p-1 focus:outline-none item-price bg-transparent text-text-base" placeholder="Price" value="${itemData.price}" min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="col-span-3 sm:col-span-2 flex justify-end items-center space-x-2">
+                        <span class="block pt-1 font-semibold text-brand-primary text-sm item-amount-display">${formatAmount(0)}</span>
+                        <button class="text-red-500 hover:text-red-700 transition remove-item-btn" type="button" data-item-id="${id}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        };
+
+        /**
+         * Adds a new line item input group to the form.
+         */
+        const addItem = (initialData) => {
+            const id = itemIdCounter++;
+            lineItemsContainer.insertAdjacentHTML('beforeend', createLineItemHTML(id, initialData));
+            // Initialize line item data model
+            lineItems.push({ id, description: initialData.description, qty: initialData.qty, price: initialData.price, total: 0 });
+            updateInvoicePreview();
+        };
+
+        /**
+         * Removes a line item from the form and data model.
+         */
+        const removeItem = (id) => {
+            const itemElement = document.querySelector(`.line-item[data-item-id="${id}"]`);
+            if (itemElement) {
+                itemElement.remove();
+                lineItems = lineItems.filter(item => item.id !== id);
+                updateInvoicePreview();
+            }
+        };
+
+        /**
+         * Recalculates all totals and updates both the input form and the preview.
+         */
+        const recalculateTotals = () => {
+            const taxRate = parseFloat(document.getElementById('taxRateInput').value) / 100 || 0;
+            const symbol = getCurrentCurrency().symbol;
+            
+            // Get Discount Inputs
+            const discountValue = parseFloat(discountValueInput.value) || 0;
+            const discountType = discountTypeSelect.value;
+
+
+            let subtotal = 0;
+
+            // 1. Recalculate Line Item totals and update input displays
+            lineItems.forEach(item => {
+                const qty = parseFloat(item.qty) || 0;
+                const price = parseFloat(item.price) || 0;
+                item.total = qty * price;
+                subtotal += item.total;
+
+                // Update display in input form
+                const itemElement = document.querySelector(`.line-item[data-item-id="${item.id}"]`);
+                if (itemElement) {
+                    itemElement.querySelector('.item-amount-display').textContent = formatAmount(item.total);
+                    // Update the currency symbol displayed next to the price input
+                    itemElement.querySelector('.currency-symbol-input').textContent = symbol;
+                }
+            });
+            
+            // 2. Calculate Discount
+            let discountAmount = 0;
+            let discountLabel = '';
+
+            if (discountType === 'percent') {
+                discountAmount = subtotal * (discountValue / 100);
+                discountLabel = `${discountValue}%`;
+            } else { // 'fixed'
+                discountAmount = discountValue;
+                discountLabel = `Fixed`;
+            }
+
+            // Ensure discount doesn't exceed subtotal
+            discountAmount = Math.min(discountAmount, subtotal);
+            
+            // 3. Calculate Adjusted Subtotal (Subtotal after Discount)
+            const adjustedSubtotal = subtotal - discountAmount;
+
+            // 4. Calculate Tax (on Adjusted Subtotal)
+            const taxAmount = adjustedSubtotal * taxRate;
+            
+            // 5. Calculate Grand Total
+            const grandTotal = adjustedSubtotal + taxAmount;
+
+
+            // 6. Update Total Summary in Preview (using currency prefix spans)
+            document.querySelectorAll('.currency-prefix').forEach(span => span.textContent = symbol);
+            
+            document.getElementById('totalSubtotal').textContent = subtotal.toFixed(2);
+            
+            // Update Discount Preview
+            document.getElementById('previewDiscountLabel').textContent = discountLabel;
+            document.getElementById('totalDiscount').textContent = `-${discountAmount.toFixed(2)}`;
+            document.getElementById('totalAdjustedSubtotal').textContent = adjustedSubtotal.toFixed(2);
+            
+            document.getElementById('previewTaxRate').textContent = (taxRate * 100).toFixed(1);
+            document.getElementById('totalTax').textContent = taxAmount.toFixed(2);
+            document.getElementById('totalGrandTotal').textContent = grandTotal.toFixed(2);
+        };
+
+        /**
+         * Updates the main invoice preview template with form data.
+         */
+        const updateInvoicePreview = () => {
+            // Update Header/Branding Details
+            document.getElementById('previewBusinessName').textContent = document.getElementById('businessNameInput').value;
+            // <-- FIX: Changed businessNameInput to businessDetailsInput for the details
+            document.getElementById('previewBusinessDetails').innerHTML = document.getElementById('businessDetailsInput').value.replace(/\n/g, '<br>');
+
+            // Update Invoice Info
+            document.getElementById('previewInvoiceNumber').textContent = document.getElementById('invoiceNumberInput').value;
+            document.getElementById('previewInvoiceDate').textContent = document.getElementById('invoiceDateInput').value;
+            document.getElementById('previewClientDetails').innerHTML = document.getElementById('clientDetailsInput').value.replace(/\n/g, '<br>');
+
+            // Update Footer Notes
+            document.getElementById('previewNotes').textContent = document.getElementById('notesInput').value;
+
+            // Update Line Item Table in Preview
+            const previewBody = document.getElementById('previewLineItems');
+            previewBody.innerHTML = '';
+            const symbol = getCurrentCurrency().symbol;
+
+            lineItems.forEach((item, index) => {
+                const row = document.createElement('tr');
+                const rowClass = index % 2 === 0 ? 'bg-white' : 'bg-brand-light';
+                row.className = rowClass;
+
+                row.innerHTML = `
+                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">${item.description || 'Service Description'}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-right">${item.qty}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-right">${symbol}${(parseFloat(item.price) || 0).toFixed(2)}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-right font-bold">${formatAmount(item.total)}</td>
+                `;
+                previewBody.appendChild(row);
+            });
+
+            // Recalculate and update totals
+            recalculateTotals();
+        };
+
+        /**
+         * Handles line item input changes.
+         */
+        const handleLineItemChange = (target) => {
+             // Handle Line Item input changes
+            if (target.closest('.line-item')) {
+                const itemId = parseInt(target.closest('.line-item').dataset.itemId);
+                const item = lineItems.find(i => i.id === itemId);
+
+                if (item) {
+                    if (target.classList.contains('item-description')) {
+                        item.description = target.value;
+                    } else if (target.classList.contains('item-qty')) {
+                        item.qty = parseFloat(target.value) || 0;
+                    } else if (target.classList.contains('item-price')) {
+                        item.price = parseFloat(target.value) || 0;
+                    }
+                }
+            }
+        }
+
+        /**
+         * CORE FUNCTION: Captures the invoice area as a canvas.
+         * @returns {Promise<HTMLCanvasElement>} The canvas element.
+         */
+        const captureInvoiceAsCanvas = () => {
+             // html2canvas options for high-quality capture
+             const options = {
+                scale: 2, // Double the scale for high resolution
+                logging: false,
+                useCORS: true,
+                backgroundColor: '#ffffff' // Ensure background is white
+            };
+            return html2canvas(invoiceTemplate, options);
+        };
+
+        /**
+         * Generates and downloads the invoice as a clean PDF file using html2pdf.js
+         */
+        const downloadPdf = () => {
+            const element = invoiceTemplate;
+            const filename = `Invoice-${invoiceNumberInput.value}-${invoiceDateInput.value}.pdf`;
+
+            // Configuration for html2pdf
+            const opt = {
+                margin: 0.5, // 0.5 inch margin on all sides
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // Use html2pdf
+            html2pdf().set(opt).from(element).save();
+        };
+
+        /**
+         * Downloads the invoice as a PNG image.
+         */
+        const downloadPng = async () => {
+            try {
+                const canvas = await captureInvoiceAsCanvas();
+                const filename = `Invoice-${invoiceNumberInput.value}-${invoiceDateInput.value}.png`;
+                
+                // Convert canvas to PNG data URL
+                const dataURL = canvas.toDataURL('image/png');
+
+                // Trigger download
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = dataURL;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+            } catch (error) {
+                console.error("Error generating PNG:", error);
+            }
+        };
+
+        /**
+         * Downloads the invoice as a JPG image.
+         */
+        const downloadJpg = async () => {
+            try {
+                const canvas = await captureInvoiceAsCanvas();
+                const filename = `Invoice-${invoiceNumberInput.value}-${invoiceDateInput.value}.jpg`;
+
+                // Convert canvas to JPEG data URL (quality 0.9 is high quality)
+                const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+
+                // Trigger download
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = dataURL;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+            } catch (error) {
+                console.error("Error generating JPG:", error);
+            }
+        };
+
+
+        // --- Event Listeners and Initial Setup ---
+        
+        // 1. Initialize Currency Selector
+        populateCurrencySelector();
+
+        // 2. Initial Item: Add one default line item on load
+        addItem({ description: '10-Hour Calculus Tutoring Package', qty: 1, price: 500.00 });
+
+        // 3. General input change listener for all form fields
+        inputElements.forEach(input => {
+            input.addEventListener('input', (e) => {
+                handleLineItemChange(e.target);
+                updateInvoicePreview();
+            });
+        });
+
+        // 4. Add Item Button Listener
+        addItemBtn.addEventListener('click', () => addItem({ description: 'Digital Course License (Lifetime)', qty: 1, price: 99.00 }));
+
+        // 5. Dynamic Line Item listener (for remove button)
+        lineItemsContainer.addEventListener('click', (e) => {
+            const removeBtn = e.target.closest('.remove-item-btn');
+            if (removeBtn) {
+                const id = parseInt(removeBtn.dataset.itemId);
+                if (lineItems.length > 1) {
+                    removeItem(id);
+                } else {
+                    // Use a message box or log, not alert()
+                    console.log("Cannot remove the last line item. An invoice must have at least one line item.");
+                }
+            }
+        });
+
+        // 6. Download Listeners
+        downloadPdfBtn.addEventListener('click', downloadPdf);
+        downloadPngBtn.addEventListener('click', downloadPng); // PNG listener
+        downloadJpgBtn.addEventListener('click', downloadJpg); // JPG listener
+        
+        // 7. Basic Print Listener (kept for quick printer access)
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+
+        // 8. Initial setup to populate preview with default values
+        updateInvoicePreview();
+
+    </script>
+
+</body>
+</html>
